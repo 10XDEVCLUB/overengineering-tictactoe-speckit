@@ -156,6 +156,8 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
 - [ ] TXXX Security hardening
 - [ ] TXXX Run quickstart.md validation
+- [ ] TXXX Update `README.md` JEP index with JEP number, title, demonstrating module/class, and
+      one-line description for each new JEP introduced by this feature (Principle XI)
 
 ---
 

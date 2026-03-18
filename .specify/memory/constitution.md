@@ -1,26 +1,25 @@
 <!--
   Sync Impact Report
   ==================
-  Version change: 1.0.0 → 1.1.0 (MINOR — new principles + modified existing)
+  Version change: 1.1.1 → 1.2.0 (MINOR — new principle XI added)
 
   Modified principles:
-    - I. Educational Parity with OpenJDK → removed "leverage preview
-      features where applicable" (now scoped to jdkXX branches via IX)
-    - IV. Convention-Based Build → `--enable-preview` scoped to jdkXX
-      branches only; main branch builds without preview flags
+    - None (existing principles unchanged)
 
   Added sections:
-    - IX. Branch Stability & JDK Versioning (new principle)
-    - X. Dependency Minimalism (new principle)
+    - XI. JEP Documentation in README
 
   Removed sections: None
 
   Templates requiring updates:
-    - .specify/templates/plan-template.md        ✅ compatible
+    - .specify/templates/plan-template.md        ✅ compatible (constitution check is dynamic)
     - .specify/templates/spec-template.md         ✅ compatible
-    - .specify/templates/tasks-template.md        ✅ compatible
+    - .specify/templates/tasks-template.md        ✅ updated — Polish phase now notes README task
 
-  Follow-up TODOs: None
+  Follow-up TODOs:
+    - constitution II module list still references original four modules
+      (api, app, native, tcp-gameserver); http-gameserver not listed.
+      Requires a separate PATCH amendment once http-gameserver merges to main.
 -->
 
 # Over-Engineering Tic-Tac-Toe Constitution
@@ -65,7 +64,8 @@ Code formatting MUST be enforced automatically via Spotless
 (Google Java Format) with a pre-commit hook. The main branch MUST
 NOT enable `--enable-preview` or `--enable-native-access=ALL-UNNAMED`
 unless the features used are finalized in the target JDK. The
-`jdkXX` branches MAY enable these flags for preview feature work.
+`jdkXX` branches and feature branches targeting them MAY enable
+these flags for preview feature work.
 
 ### V. Test-Driven Feature Addition
 
@@ -107,13 +107,17 @@ The **main** branch MUST NOT require a JDK version that is not
 generally available (GA). The main branch MUST NOT enable or depend
 on any JEP features that are still in preview status. Feature work
 targeting a future or pre-GA JDK MUST be developed on a `jdkXX`
-branch (e.g., `jdk25`, `jdk26`). These `jdkXX` branches MAY use
-preview features, but new features added on a `jdkXX` branch MUST
-be based on new JEP features (or other enhancements) introduced in
-that specific JDK version — not arbitrary preview features from
-earlier versions. A `jdkXX` branch MUST only be merged to main once
-all features it depends on have reached final/GA status in the
-target JDK.
+branch (e.g., `jdk25`, `jdk26`) or on a feature branch that merges
+into a `jdkXX` branch. Feature branches that target a `jdkXX`
+branch MAY use preview features available in that JDK version.
+These `jdkXX` branches MAY use preview features, but new features
+added on a `jdkXX` branch MUST be based on new JEP features (or
+other enhancements) introduced in that specific JDK version — not
+arbitrary preview features from earlier versions. A `jdkXX` branch
+MUST only be merged to main once all features it depends on have
+reached final/GA status in the target JDK. Feature branches MUST
+NOT merge directly to main if they depend on preview features;
+they MUST merge into their target `jdkXX` branch instead.
 
 ### X. Dependency Minimalism
 
@@ -124,6 +128,16 @@ require direct import of third-party packages in production source
 code are prohibited. Test-only dependencies (e.g., TestNG, Logback
 for SLF4J bridge) are exempt from this rule. Build-time-only
 dependencies (e.g., Spotless, Gradle plugins) are also exempt.
+
+### XI. JEP Documentation in README
+
+Any feature that introduces a new JEP demonstration MUST update the
+project `README.md` to document the demonstrated JEP. The README
+entry MUST include: the JEP number and title, the module or class
+that demonstrates it, and a one-line description of what the
+demonstration shows. The README JEP index is the authoritative
+discoverability surface for the project's educational value — a
+feature is not complete until it is discoverable there.
 
 ## Technology & Build Standards
 
@@ -150,12 +164,14 @@ dependencies (e.g., Spotless, Gradle plugins) are also exempt.
   be merged to main.
 - **PR Reviews**: All changes to main MUST go through a pull request.
 - **Preview Features**: `--enable-preview` MUST only be enabled on
-  `jdkXX` branches. The main branch MUST compile and test without
-  preview flags.
+  `jdkXX` branches or feature branches that target a `jdkXX` branch.
+  The main branch MUST compile and test without preview flags.
 - **Branch Strategy**: `jdkXX` branches (e.g., `jdk25`, `jdk26`)
   for preview/pre-GA JDK work; merged to `main` only after all
-  dependent features reach GA. Other feature branches (e.g.,
-  `security`) merged via PR to `main`.
+  dependent features reach GA. Feature branches using preview
+  features MUST merge into their target `jdkXX` branch, not
+  directly into `main`. Other feature branches (e.g., `security`)
+  that do not use preview features merge via PR to `main`.
 - **Commit Quality**: Commit messages MUST follow Conventional Commits
   format. The body SHOULD explain *why* the change was made. Breaking
   changes MUST use `feat!:` prefix or `BREAKING CHANGE:` footer.
@@ -181,4 +197,4 @@ Complexity beyond what these principles prescribe MUST be justified
 in the plan's Complexity Tracking table. Refer to `CLAUDE.md` for
 runtime development guidance.
 
-**Version**: 1.1.0 | **Ratified**: 2026-03-14 | **Last Amended**: 2026-03-14
+**Version**: 1.2.0 | **Ratified**: 2026-03-14 | **Last Amended**: 2026-03-17

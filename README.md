@@ -24,6 +24,11 @@ The following algorithms are used by the AI BOT in this project - for a detailed
 
 ### Features
 
+https://openjdk.org/projects/jdk/26/
+
+- **JEP517**:   HTTP/3 Client (See: [HttpTransportClient.java](http-gameserver/src/main/java/org/xxdc/oss/example/transport/http/HttpTransportClient.java), [HttpGameClient.java](http-gameserver/src/main/java/org/xxdc/oss/example/HttpGameClient.java))
+  - Demonstrates HTTP/3 opt-in via `HttpClient.newBuilder().version(HttpClient.Version.HTTP_3).build()` with automatic fallback to HTTP/1.1 when the server does not support QUIC. The negotiated protocol version is reported via `HttpResponse.version()` for observability. Available on the `jdk26` branch (`http-gameserver` module).
+
 https://openjdk.org/projects/jdk/25/
 
 - **JEP512**:   Compact Source Files and Instance Main Methods
@@ -107,8 +112,9 @@ https://openjdk.org/projects/jdk/18/
 
 - **JEP400**:	UTF-8 by Default
   - Source files and runtime default charset assume UTF-8; no special handling required.
-- **JEP408**:	Simple Web Server (See: [serve.sh](app/scripts/serve.sh))
-  - Uses JDK's built-in `jwebserver` via helper script to serve static files locally; see Quick Start below.
+- **JEP408**:	Simple Web Server
+  - CLI (`jwebserver`): [serve.sh](app/scripts/serve.sh) — serves static files locally via the built-in web server; see Quick Start below.
+  - Programmatic API (`com.sun.net.httpserver`): [HttpGameServer.java](http-gameserver/src/main/java/org/xxdc/oss/example/HttpGameServer.java) — builds a complete REST + SSE multiplayer game server with no external frameworks; demonstrates `HttpServer.create()`, custom `HttpHandler` routing, virtual thread executors, and chunked SSE streaming (`http-gameserver` module, `jdk26` branch).
 - **JEP413**:	Code Snippets in Java API Documentation (See: [Player.java](api/src/main/java/org/xxdc/oss/example/Player.java))
   - Uses `@snippet` to embed example usage directly in Javadoc.
 - **JEP421**:	Deprecate Finalization for Removal (See: [TicTacToeGameBoard.java](native/src/main/java/org/xxdc/oss/example/interop/TicTacToeGameBoard.java))
