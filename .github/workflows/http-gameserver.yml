@@ -1,0 +1,38 @@
+# CI workflow for the http-gameserver module (JDK 26 pre-GA, JEP 408 + JEP 517)
+# Targets the 014-http3-game-server feature branch and jdk26 integration branch.
+# Uses Azul Zulu early access JDK 26 to match the local development environment.
+
+name: HTTP Game Server CI
+
+on:
+  push:
+    branches: [ "014-http3-game-server", "jdk26" ]
+  pull_request:
+    branches: [ "014-http3-game-server", "jdk26" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # JDK 26 is pre-GA — use Azul Zulu Early Access builds (JEP 517 requires JDK 26)
+      - name: Set up JDK 26 (Azul Zulu Early Access)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '26-ea'
+          distribution: 'zulu'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@dbbdc275be76ac10734476cc723d82dfe7ec6eda # v3.4.2
+
+      - name: Build and test http-gameserver module
+        run: ./gradlew :http-gameserver:build :http-gameserver:test -PskipSigning=true
+
+env:
+  ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ vars.SIGNING_KEY_ID }}
+  ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
+  ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
